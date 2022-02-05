@@ -1,1 +1,1 @@
-NestJS library to consume an AWS Simple Queue Service
+🐈 NestJS library to consume an AWS Simple Queue Service
