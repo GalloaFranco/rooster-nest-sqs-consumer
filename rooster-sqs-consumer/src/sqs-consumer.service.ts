@@ -15,14 +15,13 @@ export class SqsConsumerService {
   private queueUrl: string;
   private isRunning: boolean;
 
-  setupConsumer(queueUrl: string) {
+  initializeSqsConsumer(queueUrl: string, localstackEndpoint?: string) { // Move parameters to specific folder, add verbose mode for logs
     this.queueUrl = queueUrl;
     this.isRunning = true;
     this.sqsClient = new SQSClient({
       region: this.region,
-      endpoint: 'http://localhost:4566', // TODO modify
+      endpoint: localstackEndpoint || '',
     });
-    this.isRunning = true;
   }
 
   async listenQueue(
@@ -40,7 +39,7 @@ export class SqsConsumerService {
      const result = await this.sqsClient.send(
          new ReceiveMessageCommand(params),
      );
-     if (result) {
+     if (result.Messages) {
        await handlerFunction(result);
      }
    }
@@ -50,7 +49,7 @@ export class SqsConsumerService {
     return this.sqsClient.send(new DeleteMessageCommand(deleteInput));
   }
 
-  stopListeningQueue() {
+  stopSqsListening() {
     this.isRunning = false;
     this.sqsClient.destroy();
   }
